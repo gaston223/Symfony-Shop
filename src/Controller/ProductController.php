@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ProductController extends AbstractController
 {
@@ -34,7 +35,7 @@ class ProductController extends AbstractController
 
     /**
      * Affiche et traite le formulaire d'ajout d'un produit
-     * @Route("/produit/creation", methods={"GET", "POST"})
+     * @Route("/produit/gestion/creation", methods={"GET", "POST"})
      * @param Request $requestHTTP
      * @return Response
      */
@@ -42,6 +43,7 @@ class ProductController extends AbstractController
     {
         // Récupération du formulaire
         $product = new Product();
+        $user=$this->getUser();
         $formProduct = $this->createForm(ProductType::class, $product);
 
         // On envoie les données postées au formulaire
@@ -50,6 +52,7 @@ class ProductController extends AbstractController
         // On vérifie que le formulaire est soumis et valide
         if ($formProduct->isSubmitted() && $formProduct->isValid()) {
             // On sauvegarde le produit en BDD grâce au manager
+            $product->setPublisher($user);
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($product);
             $manager->flush();
@@ -68,35 +71,43 @@ class ProductController extends AbstractController
 
     /**
      * Affiche et traite le formulaire de modification d'un produit
-     * @Route("/produit/modification/{slug<[a-z0-9\-]+>}", methods={"GET", "POST"})
+     * @Route("/produit/gestion/modification/{slug<[a-z0-9\-]+>}", methods={"GET", "POST"})
      * @param Request $requestHTTP
      * @param Product $product
+     * @param UserInterface $user
      * @return Response
      */
-    public function update(Request $requestHTTP, Product $product): Response
+    public function update(Request $requestHTTP, Product $product, UserInterface $user): Response
     {
-        // Récupération du formulaire
-        $formProduct = $this->createForm(ProductType::class, $product);
-
-        // On envoie les données postées au formulaire
-        $formProduct->handleRequest($requestHTTP);
-
-        // On vérifie que le formulaire est soumis et valide
-        if ($formProduct->isSubmitted() && $formProduct->isValid()) {
-            // On sauvegarde le produit en BDD grâce au manager
-            $manager = $this->getDoctrine()->getManager();
-            $manager->flush();
-
-            // Ajout d'un message flash
-            $this->addFlash('warning', 'Le produit a bien été modifié');
-
-            // Redirection
-            return $this->redirectToRoute('app_product_index');
+        //$user=$this->getUser();
+        if ($product->getPublisher() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+            $message = "L'utilisateur courant n'est pas le publication du produit, il ne peut modifier ce produit";
+            throw $this->createAccessDeniedException($message);
         }
+            // Récupération du formulaire
+            $formProduct = $this->createForm(ProductType::class, $product);
 
-        return $this->render('product/update.html.twig', [
-            'formProduct' => $formProduct->createView()
-        ]);
+            // On envoie les données postées au formulaire
+            $formProduct->handleRequest($requestHTTP);
+
+            //if()
+
+            // On vérifie que le formulaire est soumis et valide
+            if ($formProduct->isSubmitted()&& $formProduct->isValid()) {
+                // On sauvegarde le produit en BDD grâce au manager
+                $manager = $this->getDoctrine()->getManager();
+                $manager->flush();
+
+                // Ajout d'un message flash
+                $this->addFlash('warning', 'Le produit a bien été modifié');
+
+                // Redirection
+                return $this->redirectToRoute('app_product_index');
+            }
+
+            return $this->render('product/update.html.twig', [
+                'formProduct' => $formProduct->createView()
+            ]);
     }
     /**
      * Suppression d'un produit

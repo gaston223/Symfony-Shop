@@ -8,14 +8,24 @@
         <section class="row">
             {% for product in products %}
                 <div class="col-4">
-                    <div class="card">
+                    <div class="card" >
                         <img src="/img/uploads/{{ product.imageName }}" class="card-img-top"
                              alt="Image de {{ product.name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
                             <p class="card-text">{{ product.description | slice(0,100) }}</p>
+                            <p class="card-text">publié par {{ product.publisher.email | slice(0,100) }}</p>
+
                             <a href="{{ path('app_product_show', {slug: product.slug}) }}"
                                class="card-link btn btn-outline-info">Détail</a>
+
+                            {% if is_granted('ROLE_MODERATEUR') %}
+                                <a href="{{ path('app_product_update', {slug: product.slug}) }}"
+                                   class="card-link btn btn-outline-warning">Modifier</a>
+                                <a href="{{ path('app_product_delete', {slug: product.slug}) }}"
+                                   class="card-link btn btn-outline-danger">Supprimer</a>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
