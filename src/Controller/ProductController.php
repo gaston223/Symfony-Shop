@@ -162,7 +162,7 @@ class ProductController extends AbstractController
         // Création et remplissage du produit
         $product = new Product();
         $product
-            ->setName('Ventilateur d\'été2')
+            ->setName('Ventilateur d\'été')
             ->setDescription('Pour faire du froid')
             ->setImageName('ventilo.jpg')
             ->setIsPublished(true)
