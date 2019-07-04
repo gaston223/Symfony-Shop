@@ -6,10 +6,14 @@ use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
+ * @ORM\HasLifecycleCallbacks()
+ * @Vich\Uploadable
  */
 class Product
 {
@@ -65,6 +69,12 @@ class Product
     private $imageName;
 
     /**
+     * @var File
+     * @Vich\UploadableField(mapping="miniature_produit",fileNameProperty="image_name")
+     */
+    private $imageFile;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -91,7 +101,7 @@ class Product
         $this->tags = new ArrayCollection();
 
         $this->nbViews = 0;
-        $this->createdAt = new \DateTime();
+        //$this->createdAt = new \DateTime();
     }
 
     /**
@@ -183,6 +193,10 @@ class Product
         return $this->updatedAt;
     }
 
+    /**
+     * @param \DateTimeInterface|null $updatedAt
+     * @return Product
+     */
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
@@ -274,5 +288,41 @@ class Product
         $this->publisher = $publisher;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function initCreatedAt()
+    {
+        $this->createdAt=new\DateTime();
+    }
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function refreshUpdatedAt()
+    {
+        $this->updatedAt=new \DateTime();
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File $imageFile
+     * @return void
+     * @throws \Exception
+     */
+    public function setImageFile(?File $imageFile = null):void
+    {
+        if (!is_null($imageFile)) {
+            $this->updatedAt=new \DateTimeImmutable();
+        }
+        $this->imageFile = $imageFile;
     }
 }

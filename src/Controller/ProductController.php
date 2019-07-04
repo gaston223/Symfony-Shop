@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,17 +94,17 @@ class ProductController extends AbstractController
             //if()
 
             // On vérifie que le formulaire est soumis et valide
-            if ($formProduct->isSubmitted()&& $formProduct->isValid()) {
-                // On sauvegarde le produit en BDD grâce au manager
-                $manager = $this->getDoctrine()->getManager();
-                $manager->flush();
+        if ($formProduct->isSubmitted()&& $formProduct->isValid()) {
+            // On sauvegarde le produit en BDD grâce au manager
+            $manager = $this->getDoctrine()->getManager();
+            $manager->flush();
 
-                // Ajout d'un message flash
-                $this->addFlash('warning', 'Le produit a bien été modifié');
+            // Ajout d'un message flash
+            $this->addFlash('warning', 'Le produit a bien été modifié');
 
-                // Redirection
-                return $this->redirectToRoute('app_product_index');
-            }
+            // Redirection
+            return $this->redirectToRoute('app_product_index');
+        }
 
             return $this->render('product/update.html.twig', [
                 'formProduct' => $formProduct->createView()
@@ -111,6 +112,7 @@ class ProductController extends AbstractController
     }
     /**
      * Suppression d'un produit
+     * @IsGranted("ROLE_MODERATEUR")
      * @Route("/produit/suppression/{slug<[a-z0-9\-]+>}", methods={"GET", "POST"})
      * @param Product $product
      * @return Response

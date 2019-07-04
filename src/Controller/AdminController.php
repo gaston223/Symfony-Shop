@@ -84,7 +84,6 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $manager->persist($user);
             $manager->flush();
             $this->addFlash('success', 'Votre user a bien été ajouté, félicitations !');

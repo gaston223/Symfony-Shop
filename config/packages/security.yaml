@@ -26,6 +26,9 @@ security:
             guard:
                 authenticators:
                     - App\Security\AppAuthAuthenticator
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -37,6 +40,6 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/produit/gestion, roles: IS_AUTHENTICATED_FULLY}
-        - { path: ^/produit/suppresion, roles: ROLE_MODERATEUR}
+        #- { path: ^/produit/suppresion, roles: ROLE_MODERATEUR}
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }

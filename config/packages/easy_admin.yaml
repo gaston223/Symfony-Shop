@@ -1,0 +1,29 @@
+easy_admin:
+    entities:
+        # List the entity class name you want to manage
+        Product:
+            class: App\Entity\Product
+            form:
+                fields:
+                    - name
+                    - description
+                    - description
+                    - price
+                    - isPublished
+                    - imageName
+                    - category
+                    - publisher
+        Category:
+            class: App\Entity\Category
+        User:
+            class: App\Entity\User
+        Tag:
+            class: App\Entity\Tag
+    design:
+        menu:
+            - Product
+            - Category
+            - User
+            - Tag
+            - { label: "Page d'accueil", route: 'app_homepage' }
+            - { label: 'Liste des Produits', route: 'app_product_index' }

@@ -51,7 +51,6 @@ class TagController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $manager->persist($tag);
             $manager->flush();
             $this->addFlash('success', 'Votre tag a bien été ajouté, félicitations !');
@@ -84,13 +83,13 @@ class TagController extends AbstractController
      * @param ObjectManager $manager
      * @return Response
      */
-    public function edit(Request $request,Tag $tag, ObjectManager $manager):Response
+    public function edit(Request $request, Tag $tag, ObjectManager $manager):Response
     {
-        $form =$this->createForm(TagType::class,$tag);
+        $form =$this->createForm(TagType::class, $tag);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-           $manager->flush();
+            $manager->flush();
             $this->addFlash('warning', 'Tag bien modifié !');
 
             return $this->redirectToRoute('app_tag_index', [
