@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Product;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,7 +18,7 @@ class ProductType extends AbstractType
             ->add('name', null, [
                 'label' => 'Nom'
             ])
-            ->add('description')
+            ->add('description', CKEditorType::class)
             ->add('price', null, [
                 'label' => 'Prix'
             ])

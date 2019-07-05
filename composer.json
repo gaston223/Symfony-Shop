@@ -8,6 +8,7 @@
         "cocur/slugify": "^3.2",
         "doctrine/annotations": "^1.6",
         "easycorp/easyadmin-bundle": "^2.2",
+        "friendsofsymfony/ckeditor-bundle": "^2.1",
         "fzaninotto/faker": "^1.8",
         "knplabs/knp-paginator-bundle": "^4.0",
         "sensio/framework-extra-bundle": "^5.3",
