@@ -7,7 +7,6 @@ easy_admin:
                 fields:
                     - name
                     - description
-                    - description
                     - price
                     - isPublished
                     - imageName

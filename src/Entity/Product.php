@@ -216,17 +216,9 @@ class Product
         return $this;
     }
 
-    public function getImageName(): ?string
-    {
-        return $this->imageName;
-    }
 
-    public function setImageName(string $imageName): self
-    {
-        $this->imageName = $imageName;
 
-        return $this;
-    }
+
 
     public function getCategory(): ?Category
     {
@@ -296,6 +288,7 @@ class Product
     public function initCreatedAt()
     {
         $this->createdAt=new\DateTime();
+        $this->updateSlug();
     }
     /**
      * @ORM\PreUpdate()
@@ -303,6 +296,19 @@ class Product
     public function refreshUpdatedAt()
     {
         $this->updatedAt=new \DateTime();
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName = null): void
+    {
+        if (!is_null($imageName)) {
+            $this->updatedAt=new \DateTimeImmutable();
+        }
+        $this->imageName = $imageName;
     }
 
     /**
